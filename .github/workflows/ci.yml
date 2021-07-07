@@ -27,6 +27,6 @@ jobs:
     - name: Install dependencies
       run: pip install -r requirements.txt
     - name: Lint
-      run: flake8 cli
+      run: flake8 dbt_admin
     - name: Test
       run: pytest
