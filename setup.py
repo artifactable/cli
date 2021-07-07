@@ -1,10 +1,9 @@
 from setuptools import setup, find_packages
 
-from cli import __version__
 
 setup(
     name='dbt_admin',    
-    version=__version__,
+    version='0.0.1',
     description='Command line interface for working with dbt-admin.',  
     author='Tom Waterman',
     author_email='tjwaterman99@gmail.com',
