@@ -1,10 +1,21 @@
 import pkg_resources
 import click
+import os
+import json
+
+from .client import Client
+
+
+class Context(object):
+    pass
 
 
 @click.group()
-def cli():
-    pass
+@click.pass_context
+def cli(ctx):
+    token = os.environ.get('DBT_ADMIN_TOKEN')
+    ctx.obj = Context()
+    ctx.obj.token = token
 
 
 @cli.command()
@@ -14,3 +25,18 @@ def version():
     """
 
     print(pkg_resources.require('dbt_admin')[0].version)
+
+
+@cli.command()
+@click.pass_context
+def push(ctx):
+    """
+    Upload dbt artifacts to dbt-admin
+    """
+
+    client = Client(token=ctx.obj.token)
+
+    with open('./target/run_results.json', 'r') as f:
+        artifact = json.load(f)
+    resp = client.post('/artifacts', data={'artifact': artifact})
+    print(resp)

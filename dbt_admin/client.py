@@ -18,7 +18,7 @@ class Client(object):
 
     def send(self, method, path, data=None, params={}):
         url = self.host + path
-        return requests.request(method, url, headers=self.headers, data=data,
+        return requests.request(method, url, headers=self.headers, json=data,
                                 params=params)
 
     def get(self, path, **kwargs):
