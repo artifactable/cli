@@ -15,7 +15,7 @@ setup(
         ]
     },
     install_requires=[
-        'requests==2.25.1',
+        'requests<2.24.0',
         'click==8.0.1'
     ]
 )
