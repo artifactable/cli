@@ -13,7 +13,7 @@ class Context(object):
 @click.group()
 @click.pass_context
 def cli(ctx):
-    token = os.environ.get('AET_ADMIN_TOKEN')
+    token = os.environ.get('AET_TOKEN')
     ctx.obj = Context()
     ctx.obj.token = token
 
