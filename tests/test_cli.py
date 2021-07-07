@@ -1,6 +1,6 @@
 import subprocess
 
-from cli import __version__
+from dbt_admin import __version__
 
 
 def test_version_command():
