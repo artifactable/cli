@@ -54,7 +54,9 @@ def push(ctx, target_path):
 
     for path in artifact_paths:
         if not os.path.exists(path):
-            print(f"Skipping artifact: {path}")
+            print(f"Skipping artifact {path.split(os.path.sep)[-1]}."
+                  f" No artifact found at {path}")
+            continue
 
         with open(path, 'r') as f:
             try:
