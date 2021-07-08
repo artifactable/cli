@@ -28,15 +28,43 @@ def version():
 
 
 @cli.command()
+@click.option(
+    '--target-path',
+    help="Path to dbt target directory",
+    default="target"
+)
 @click.pass_context
-def push(ctx):
+def push(ctx, target_path):
     """
-    Upload dbt artifacts to aet
+    Upload dbt artifacts
     """
 
     client = Client(token=ctx.obj.token)
 
-    with open('./target/run_results.json', 'r') as f:
-        artifact = json.load(f)
-    resp = client.post('/artifacts', data={'artifact': artifact})
-    print(resp)
+    artifact_names = [
+        'run_results.json',
+        'manifest.json',
+        'catalog.json',
+    ]
+
+    artifact_paths = [
+        os.path.abspath(os.path.join(os.getcwd(), target_path, artifact_name))
+        for artifact_name in artifact_names
+    ]
+
+    for path in artifact_paths:
+        if not os.path.exists(path):
+            print(f"Skipping artifact: {path}")
+
+        with open(path, 'r') as f:
+            try:
+                artifact = json.load(f)
+            except json.decoder.JSONDecoderError:
+                print(f"Invalid artifact: {path}")
+
+            resp = client.post('/artifacts', data={'artifact': artifact})
+            if not resp.ok:
+                print(f"Failed to load artifact "
+                      f"(status={resp.status_code}) {path}")
+            else:
+                print(f"Loaded artifact {path}")
