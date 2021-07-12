@@ -2,8 +2,13 @@ import pkg_resources
 import click
 import os
 import json
+import yaml
 
 from .client import Client
+
+
+default_target_dir = 'target'
+default_project_dir = '.'
 
 
 class Context(object):
@@ -29,44 +34,37 @@ def version():
 
 @cli.command()
 @click.option(
-    '--target-path',
-    help="Path to dbt target directory",
-    default="target"
+    '--target-dir',
+    help="Which directory to look in for the compiled dbt assets "
+         "file (run_results.json, manifest.json)",
+    default=default_target_dir
+)
+@click.option(
+    '--project-dir',
+    default=default_project_dir,
+    help="Which directory to look in for the dbt_project.yml file"
 )
 @click.pass_context
-def push(ctx, target_path):
+def push(ctx, target_dir, project_dir):
     """
-    Upload dbt artifacts
+    Send alerts about the latest run or test command
     """
 
     client = Client(token=ctx.obj.token)
+    run_results_file = os.path.join(target_dir, 'run_results.json')
+    manifest_file = os.path.join(target_dir, 'manifest.json')
+    dbt_project_file = os.path.join(project_dir, 'dbt_project.yml')
 
-    artifact_names = [
-        'run_results.json',
-        'manifest.json',
-        'catalog.json',
-    ]
+    run_results_json = json.loads(open(run_results_file, 'r').read())
+    manifest_json = json.loads(open(manifest_file, 'r').read())
+    dbt_project_json = yaml.load(open(dbt_project_file, 'r').read(),
+                                 Loader=yaml.FullLoader)
 
-    artifact_paths = [
-        os.path.abspath(os.path.join(os.getcwd(), target_path, artifact_name))
-        for artifact_name in artifact_names
-    ]
+    data = {
+        'run_results': run_results_json,
+        'manifest': manifest_json,
+        'dbt_project': dbt_project_json
+    }
 
-    for path in artifact_paths:
-        if not os.path.exists(path):
-            print(f"Skipping artifact {path.split(os.path.sep)[-1]}."
-                  f" No artifact found at {path}")
-            continue
-
-        with open(path, 'r') as f:
-            try:
-                artifact = json.load(f)
-            except json.decoder.JSONDecoderError:
-                print(f"Invalid artifact: {path}")
-
-            resp = client.post('/artifacts', data={'artifact': artifact})
-            if not resp.ok:
-                print(f"Failed to load artifact "
-                      f"(status={resp.status_code}) {path}")
-            else:
-                print(f"Loaded artifact {path}")
+    resp = client.post('/artifacts', data=data)
+    print(json.dumps(resp.json(), indent=2))

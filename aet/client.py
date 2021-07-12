@@ -2,7 +2,7 @@ import os
 import requests
 
 
-host = os.environ.get('AET_HOST', 'https://aet-prod.herokuapp.com/api')
+host = os.environ.get('AET_HOST', 'https://aet-api-prod.herokuapp.com')
 
 
 class Client(object):
