@@ -67,4 +67,4 @@ def push(ctx, target_dir, project_dir):
     }
 
     resp = client.post('/artifacts', data=data)
-    print(resp.json())
+    print(json.dumps(resp.json(), indent=2))
