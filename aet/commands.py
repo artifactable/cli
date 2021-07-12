@@ -47,7 +47,7 @@ def version():
 @click.pass_context
 def push(ctx, target_dir, project_dir):
     """
-    Send alerts about the latest run or test command  
+    Send alerts about the latest run or test command
     """
 
     client = Client(token=ctx.obj.token)
@@ -57,8 +57,8 @@ def push(ctx, target_dir, project_dir):
 
     run_results_json = json.loads(open(run_results_file, 'r').read())
     manifest_json = json.loads(open(manifest_file, 'r').read())
-    dbt_project_json = yaml.load(open(dbt_project_file, 'r').read(), 
-                              Loader=yaml.FullLoader)
+    dbt_project_json = yaml.load(open(dbt_project_file, 'r').read(),
+                                 Loader=yaml.FullLoader)
 
     data = {
         'run_results': run_results_json,
