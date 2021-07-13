@@ -7,7 +7,10 @@ import yaml
 import sys
 
 from .client import Client
-from .helpers import load_token, default_project_dir, default_target_dir
+from .helpers import (
+    load_token, default_project_dir, default_target_dir,
+    save_credentials
+)
 
 
 class Context(object):
