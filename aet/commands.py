@@ -45,6 +45,8 @@ def cli(ctx):
     credentials = load_credentials()
     if credentials:
         token = credentials['data']['attributes']['token']
+    else:
+        token = None
 
     ctx.obj = Context()
     ctx.obj.token = token
