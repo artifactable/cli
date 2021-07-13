@@ -1,12 +1,16 @@
+import getpass
 import pkg_resources
 import click
 import os
 import json
 import yaml
+import sys
 
 from .client import Client
 
 
+profile_dir = os.path.join(os.path.expanduser('~'), '.aet')
+credentials_path = os.path.join(profile_dir, 'user.json')
 default_target_dir = 'target'
 default_project_dir = '.'
 
@@ -15,12 +19,55 @@ class Context(object):
     pass
 
 
+def save_credentials(user):
+    if not os.path.isdir(profile_dir):
+        os.mkdir(profile_dir)
+    with open(credentials_path, 'w') as fh:
+        json.dump(user, fh, indent=2)
+
+
+def load_credentials():
+    if not os.path.exists(credentials_path):
+        return {}
+
+    with open(credentials_path, 'r') as fh:
+        credentials = json.load(fh)
+
+    return credentials
+
+
 @click.group()
 @click.pass_context
 def cli(ctx):
-    token = os.environ.get('AET_TOKEN')
+    if 'AET_TOKEN' in os.environ:
+        token = os.environ['AET_TOKEN']
+
+    credentials = load_credentials()
+    if credentials:
+        token = credentials['data']['attributes']['token']
+    else:
+        token = None
+
     ctx.obj = Context()
     ctx.obj.token = token
+
+
+@cli.group()
+@click.pass_context
+def alerts(ctx):
+    """
+    Commands for managing alerts
+    """
+
+    pass
+
+
+@alerts.command()
+@click.pass_context
+def list(ctx):
+    client = Client(token=ctx.obj.token)
+    resp = client.get('/notifications')
+    print(json.dumps(resp.json(), indent=2))
 
 
 @cli.command()
@@ -68,3 +115,57 @@ def push(ctx, target_dir, project_dir):
 
     resp = client.post('/artifacts', data=data)
     print(json.dumps(resp.json(), indent=2))
+
+
+@cli.command()
+@click.pass_context
+def login(ctx):
+    """
+    Log into the aet service
+    """
+
+    client = Client(token=ctx.obj.token)
+
+    email = input("Enter email: ")
+    password = getpass.getpass("Enter password: ")
+
+    resp = client.post('/login', data={
+        'email': email,
+        'password': password
+    })
+
+    if resp.ok:
+        save_credentials(resp.json())
+        print("Successfully logged in")
+    else:
+        print(resp.json())
+
+
+@cli.command()
+@click.pass_context
+def register(ctx):
+    """
+    Register a new account
+    """
+
+    client = Client(token=ctx.obj.token)
+
+    email = input("Enter email: ")
+    password = getpass.getpass("Enter password: ")
+    password2 = getpass.getpass("Confirm password: ")
+
+    if password != password2:
+        print("Passwords do match")
+        sys.exit(1)
+
+    resp = client.post('/users', data={
+        'email': email,
+        'password': password
+    })
+
+    if resp.ok:
+        save_credentials(resp.json())
+        print()
+        print("Successfully created account")
+    else:
+        print(resp.json())
