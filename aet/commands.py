@@ -7,47 +7,17 @@ import yaml
 import sys
 
 from .client import Client
-
-
-profile_dir = os.path.join(os.path.expanduser('~'), '.aet')
-credentials_path = os.path.join(profile_dir, 'user.json')
-default_target_dir = 'target'
-default_project_dir = '.'
+from .helpers import load_token, default_project_dir, default_target_dir
 
 
 class Context(object):
     pass
 
 
-def save_credentials(user):
-    if not os.path.isdir(profile_dir):
-        os.mkdir(profile_dir)
-    with open(credentials_path, 'w') as fh:
-        json.dump(user, fh, indent=2)
-
-
-def load_credentials():
-    if not os.path.exists(credentials_path):
-        return {}
-
-    with open(credentials_path, 'r') as fh:
-        credentials = json.load(fh)
-
-    return credentials
-
-
 @click.group()
 @click.pass_context
 def cli(ctx):
-    if 'AET_TOKEN' in os.environ:
-        token = os.environ['AET_TOKEN']
-
-    credentials = load_credentials()
-    if credentials:
-        token = credentials['data']['attributes']['token']
-    else:
-        token = None
-
+    token = load_token()
     ctx.obj = Context()
     ctx.obj.token = token
 
