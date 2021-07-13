@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='aet',    
-    version='0.1.0',
+    version='0.1.1',
     description='Command line interface for working with aet services.',  
     author='Tom Waterman',
     author_email='tjwaterman99@gmail.com',
