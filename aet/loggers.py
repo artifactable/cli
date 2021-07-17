@@ -12,11 +12,13 @@ def log_response(response, message=None, verbose=False):
             click.echo(message)
     else:
         try:
-            # We'll want to improve this once we get the API consistently logging
-            # errors that follow JSONAPI spec
+            # We'll want to improve this once we get the API consistently
+            # logging errors that follow JSONAPI spec
             errors = response.json()['errors']
             print(json.dumps(errors), indent=2)
-        except json.JSONDecodeError as err:
-            click.echo("Response has an error code but contains invalid JSON. Please try again.")
-        except KeyError as err:
-            click.echo("Response has an error code but no associated errors. Please try again.")
+        except json.JSONDecodeError:
+            click.echo("Response has an error code but "
+                       "contains invalid JSON. Please try again.")
+        except KeyError:
+            click.echo("Response has an error code but no associated errors."
+                       " Please try again.")

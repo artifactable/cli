@@ -19,7 +19,11 @@ class Context(object):
 
 
 @click.group()
-@click.option('--verbose/--no-verbose', default=False, help="Print more verbose output")
+@click.option(
+    '--verbose/--no-verbose',
+    default=False,
+    help="Print more verbose output"
+)
 @click.pass_context
 def cli(ctx, verbose):
     token = load_token()
@@ -90,7 +94,7 @@ def push(ctx, target_dir, project_dir):
     }
 
     resp = client.post('/artifacts', data=data)
-    log_response(resp, message="Successfully uploaded artifacts.", 
+    log_response(resp, message="Successfully uploaded artifacts.",
                  verbose=ctx.obj.verbose)
 
 
@@ -112,7 +116,7 @@ def login(ctx):
     })
     if resp.ok:
         save_credentials(resp.json())
-    log_response(resp, message="Successfully logged in", 
+    log_response(resp, message="Successfully logged in",
                  verbose=ctx.obj.verbose)
 
 
