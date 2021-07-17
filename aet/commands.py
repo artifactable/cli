@@ -11,6 +11,7 @@ from .helpers import (
     load_token, default_project_dir, default_target_dir,
     save_credentials
 )
+from .loggers import log_response
 
 
 class Context(object):
@@ -18,11 +19,17 @@ class Context(object):
 
 
 @click.group()
+@click.option(
+    '--verbose/--no-verbose',
+    default=False,
+    help="Print more verbose output"
+)
 @click.pass_context
-def cli(ctx):
+def cli(ctx, verbose):
     token = load_token()
     ctx.obj = Context()
     ctx.obj.token = token
+    ctx.obj.verbose = verbose
 
 
 @cli.group()
@@ -40,7 +47,7 @@ def alerts(ctx):
 def list(ctx):
     client = Client(token=ctx.obj.token)
     resp = client.get('/notifications')
-    print(json.dumps(resp.json(), indent=2))
+    log_response(resp, verbose=True)
 
 
 @cli.command()
@@ -87,7 +94,8 @@ def push(ctx, target_dir, project_dir):
     }
 
     resp = client.post('/artifacts', data=data)
-    print(json.dumps(resp.json(), indent=2))
+    log_response(resp, message="Successfully uploaded artifacts.",
+                 verbose=ctx.obj.verbose)
 
 
 @cli.command()
@@ -106,12 +114,10 @@ def login(ctx):
         'email': email,
         'password': password
     })
-
     if resp.ok:
         save_credentials(resp.json())
-        print("Successfully logged in")
-    else:
-        print(resp.json())
+    log_response(resp, message="Successfully logged in",
+                 verbose=ctx.obj.verbose)
 
 
 @cli.command()
@@ -138,7 +144,4 @@ def register(ctx):
 
     if resp.ok:
         save_credentials(resp.json())
-        print()
-        print("Successfully created account")
-    else:
-        print(resp.json())
+    log_response(resp, message="Successfully created account")
