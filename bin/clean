@@ -5,5 +5,5 @@ rm -rf aet.egg-info
 rm -rf build/
 rm -rf dist/
 rm -rf target/
-rm -rf venv/
+# rm -rf venv/
 rm -rf tests/__pycache__
