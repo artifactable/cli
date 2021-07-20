@@ -2,24 +2,25 @@ import json
 import os
 
 
-profile_dir = os.path.join(os.path.expanduser('~'), '.aet')
-credentials_path = os.path.join(profile_dir, 'user.json')
-default_target_dir = 'target'
-default_project_dir = '.'
+from .config import Config
 
 
 def save_credentials(user):
-    if not os.path.isdir(profile_dir):
-        os.mkdir(profile_dir)
-    with open(credentials_path, 'w') as fh:
+    config = Config()
+
+    if not os.path.isdir(config.aet_home_dir):
+        os.mkdir(config.aet_home_dir)
+    with open(config.aet_credentials_path, 'w') as fh:
         json.dump(user, fh, indent=2)
 
 
 def load_token():
-    if 'AET_TOKEN' in os.environ:
-        return os.environ['AET_TOKEN']
-    elif os.path.exists(credentials_path):
-        with open(credentials_path, 'r') as fh:
+    config = Config()
+    
+    if config.aet_token:
+        return aet_token
+    elif os.path.exists(config.aet_credentials_path):
+        with open(config.aet_credentials_path, 'r') as fh:
             credentials = json.load(fh)
             return credentials['data']['attributes']['token']
     else:

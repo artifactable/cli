@@ -7,10 +7,8 @@ import yaml
 import sys
 
 from .client import Client
-from .helpers import (
-    load_token, default_project_dir, default_target_dir,
-    save_credentials
-)
+from .helpers import load_token, save_credentials
+from .config import Config
 from .loggers import log_response
 
 
@@ -26,7 +24,7 @@ class Context(object):
 )
 @click.pass_context
 def cli(ctx, verbose):
-    token = load_token()
+    token = Config().aet_token
     ctx.obj = Context()
     ctx.obj.token = token
     ctx.obj.verbose = verbose
@@ -64,11 +62,11 @@ def version():
     '--target-dir',
     help="Which directory to look in for the compiled dbt assets "
          "file (run_results.json, manifest.json)",
-    default=default_target_dir
+    default=None
 )
 @click.option(
     '--project-dir',
-    default=default_project_dir,
+    default=None,
     help="Which directory to look in for the dbt_project.yml file"
 )
 @click.pass_context
@@ -76,11 +74,18 @@ def push(ctx, target_dir, project_dir):
     """
     Send alerts about the latest run or test command
     """
-
+    
+    # I think we should probably move the config in to the set of gloal
+    # cli options.
+    config = Config()
     client = Client(token=ctx.obj.token)
-    run_results_file = os.path.join(target_dir, 'run_results.json')
-    manifest_file = os.path.join(target_dir, 'manifest.json')
-    dbt_project_file = os.path.join(project_dir, 'dbt_project.yml')
+
+    dbt_target_dir = target_dir or config.dbt_target_dir
+    dbt_project_dir = project_dir or config.dbt_project_dir
+
+    run_results_file = os.path.join(dbt_target_dir, 'run_results.json')
+    manifest_file = os.path.join(dbt_target_dir, 'manifest.json')
+    dbt_project_file = os.path.join(_dbt_project_dir, 'dbt_project.yml')
 
     run_results_json = json.loads(open(run_results_file, 'r').read())
     manifest_json = json.loads(open(manifest_file, 'r').read())
