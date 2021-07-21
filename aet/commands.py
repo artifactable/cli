@@ -100,7 +100,8 @@ def push(ctx, target_dir, project_dir):
     data = {
         'run_results': run_results_json,
         'manifest': manifest_json,
-        'dbt_project': dbt_project_json
+        'dbt_project': dbt_project_json,
+        'git_branch': config.git_branch
     }
 
     resp = client.post('/artifacts', data=data)
