@@ -1,9 +1,11 @@
 from setuptools import setup, find_packages
 
+import aet
+
 
 setup(
     name='aet',    
-    version='0.1.3',
+    version=aet.__version__,
     description='Command line interface for working with aet services.',  
     author='Tom Waterman',
     author_email='tjwaterman99@gmail.com',
@@ -11,7 +13,7 @@ setup(
     packages=find_packages(),
     entry_points={
         'console_scripts': [
-            'aet=aet:main'
+            'aet=aet.__main__:cli'
         ]
     },
     install_requires=[
