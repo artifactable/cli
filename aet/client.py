@@ -2,13 +2,10 @@ import os
 import requests
 
 
-from .config import Config
-
-
 class Client(object):
 
-    def __init__(self, token, host=None):
-        self.config = Config()
+    def __init__(self, config):
+        self.config = config
         self.token = self.config.aet_token
         self.host = self.config.aet_host
         self.headers = {
