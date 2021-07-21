@@ -12,7 +12,8 @@ def test_config_inits():
 
 def test_config_to_dict():
     config = Config()
-    assert 'aet_token' in config.to_dict().keys()
+    assert 'aet_token' in config.to_dict()
+    assert 'git_branch' in config.to_dict()
 
 
 def test_config_to_json(tmpdir):

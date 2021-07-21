@@ -2,6 +2,7 @@
 import os
 import pathlib
 import json
+import subprocess
 
 
 class ConfigEncoder(json.JSONEncoder):
@@ -35,6 +36,7 @@ class Config(object):
         self.dbt_target_dir = dbt_target_dir or self.default_dbt_target_dir
         self.aet_host = aet_host or os.environ.get('AET_HOST') or self.default_aet_host
         self.aet_token = aet_token or os.environ.get('AET_TOKEN') or self.load_saved_token() or self.default_aet_token
+        self.git_branch = self.load_git_branch()
 
     def to_dict(self):  
         return {
@@ -44,6 +46,7 @@ class Config(object):
             'aet_credentials_path': self.aet_credentials_path,
             'dbt_project_dir': self.dbt_project_dir,
             'dbt_target_dir': self.dbt_target_dir,
+            'git_branch': self.git_branch
         }
 
     def to_json(self):
@@ -53,6 +56,12 @@ class Config(object):
                 data[secret] = '***'
         return json.dumps(data, indent=2, cls=ConfigEncoder)
 
+    def load_git_branch(self):
+        resp = subprocess.run(['git', 'rev-parse', '--abbrev-ref', 'HEAD'], capture_output=True)
+        if resp.returncode == 0:
+            return resp.stdout.decode().strip()
+        else:
+            return None
     
     def load_saved_token(self):
         if os.path.exists(self.aet_credentials_path):
