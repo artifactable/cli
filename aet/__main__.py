@@ -1,8 +1,5 @@
 from .commands import cli
 
 
-__version__ = '0.1.4'
-
-
-def main():
+if __name__ == "__main__":
     cli()
