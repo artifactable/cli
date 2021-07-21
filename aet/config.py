@@ -58,7 +58,10 @@ class Config(object):
 
     def load_git_branch(self):
         resp = subprocess.run(['git', 'rev-parse', '--abbrev-ref', 'HEAD'], capture_output=True)
-        return resp.stdout.decode().strip()
+        if resp.returncode == 0:
+            return resp.stdout.decode().strip()
+        else:
+            return None
     
     def load_saved_token(self):
         if os.path.exists(self.aet_credentials_path):
