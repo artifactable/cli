@@ -24,14 +24,15 @@ class Config(object):
         'aet_token'
     ]
 
-    def __init__(self, aet_host=None, aet_token=None, aet_home_dir=None):
+    def __init__(self, aet_host=None, aet_token=None, aet_home_dir=None,
+                 dbt_project_dir=None, dbt_target_dir=None):
         if aet_home_dir:
             self.aet_home_dir = pathlib.Path(aet_home_dir)
         else:
             self.aet_home_dir = self.default_aet_home_dir
         self.aet_credentials_path = self.aet_home_dir / 'user.json'
-        self.dbt_project_dir = self.default_dbt_project_dir
-        self.dbt_target_dir = self.default_dbt_target_dir
+        self.dbt_project_dir = dbt_project_dir or self.default_dbt_project_dir
+        self.dbt_target_dir = dbt_target_dir or self.default_dbt_target_dir
         self.aet_host = aet_host or os.environ.get('AET_HOST') or self.default_aet_host
         self.aet_token = aet_token or os.environ.get('AET_TOKEN') or self.load_saved_token() or self.default_aet_token
 
