@@ -5,6 +5,7 @@ import os
 from .config import Config
 
 
+# This should probably be a method on the Config object
 def save_credentials(user):
     config = Config()
 
@@ -14,9 +15,10 @@ def save_credentials(user):
         json.dump(user, fh, indent=2)
 
 
+# The token should probably be retrieved by querying the config object
 def load_token():
     config = Config()
-    
+
     if config.aet_token:
         return aet_token
     elif os.path.exists(config.aet_credentials_path):
