@@ -7,10 +7,7 @@ import yaml
 import sys
 
 from .client import Client
-from .helpers import (
-    load_token, default_project_dir, default_target_dir,
-    save_credentials
-)
+from .config import Config
 from .loggers import log_response
 
 
@@ -26,10 +23,22 @@ class Context(object):
 )
 @click.pass_context
 def cli(ctx, verbose):
-    token = load_token()
+    config = Config()
+    client = Client(config=config)
     ctx.obj = Context()
-    ctx.obj.token = token
+    ctx.obj.client = client
+    ctx.obj.config = config
     ctx.obj.verbose = verbose
+
+
+@cli.command()
+@click.pass_context
+def debug(ctx):
+    """
+    Print configuration information
+    """
+
+    print(ctx.obj.config.to_json())
 
 
 @cli.group()
@@ -45,8 +54,7 @@ def alerts(ctx):
 @alerts.command()
 @click.pass_context
 def list(ctx):
-    client = Client(token=ctx.obj.token)
-    resp = client.get('/notifications')
+    resp = ctx.obj.client.get('/notifications')
     log_response(resp, verbose=True)
 
 
@@ -64,11 +72,11 @@ def version():
     '--target-dir',
     help="Which directory to look in for the compiled dbt assets "
          "file (run_results.json, manifest.json)",
-    default=default_target_dir
+    default=None
 )
 @click.option(
     '--project-dir',
-    default=default_project_dir,
+    default=None,
     help="Which directory to look in for the dbt_project.yml file"
 )
 @click.pass_context
@@ -77,10 +85,12 @@ def push(ctx, target_dir, project_dir):
     Send alerts about the latest run or test command
     """
 
-    client = Client(token=ctx.obj.token)
-    run_results_file = os.path.join(target_dir, 'run_results.json')
-    manifest_file = os.path.join(target_dir, 'manifest.json')
-    dbt_project_file = os.path.join(project_dir, 'dbt_project.yml')
+    config = Config(dbt_project_dir=project_dir, dbt_target_dir=target_dir)
+    client = Client(config=config)
+
+    run_results_file = os.path.join(config.dbt_target_dir, 'run_results.json')
+    manifest_file = os.path.join(config.dbt_target_dir, 'manifest.json')
+    dbt_project_file = os.path.join(config.dbt_project_dir, 'dbt_project.yml')
 
     run_results_json = json.loads(open(run_results_file, 'r').read())
     manifest_json = json.loads(open(manifest_file, 'r').read())
@@ -105,17 +115,15 @@ def login(ctx):
     Log into the aet service
     """
 
-    client = Client(token=ctx.obj.token)
-
     email = input("Enter email: ")
     password = getpass.getpass("Enter password: ")
 
-    resp = client.post('/login', data={
+    resp = ctx.obj.client.post('/login', data={
         'email': email,
         'password': password
     })
     if resp.ok:
-        save_credentials(resp.json())
+        ctx.obj.config.save_credentials(resp.json())
     log_response(resp, message="Successfully logged in",
                  verbose=ctx.obj.verbose)
 
@@ -127,8 +135,6 @@ def register(ctx):
     Register a new account
     """
 
-    client = Client(token=ctx.obj.token)
-
     email = input("Enter email: ")
     password = getpass.getpass("Enter password: ")
     password2 = getpass.getpass("Confirm password: ")
@@ -137,11 +143,11 @@ def register(ctx):
         print("Passwords do match")
         sys.exit(1)
 
-    resp = client.post('/users', data={
+    resp = ctx.obj.client.post('/users', data={
         'email': email,
         'password': password
     })
 
     if resp.ok:
-        save_credentials(resp.json())
+        ctx.obj.config.save_credentials(resp.json())
     log_response(resp, message="Successfully created account")

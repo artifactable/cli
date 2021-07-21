@@ -2,14 +2,12 @@ import os
 import requests
 
 
-host = os.environ.get('AET_HOST', 'https://aet-api-prod.herokuapp.com')
-
-
 class Client(object):
 
-    def __init__(self, token, host=host):
-        self.token = token
-        self.host = host
+    def __init__(self, config):
+        self.config = config
+        self.token = self.config.aet_token
+        self.host = self.config.aet_host
         self.headers = {
             'Content-Type': 'application/json',
             'Authorization': f'Bearer {self.token}'
