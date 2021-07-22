@@ -1,3 +1,5 @@
+import sys
+import logging
 import getpass
 import pkg_resources
 import click
@@ -23,12 +25,22 @@ class Context(object):
 )
 @click.pass_context
 def cli(ctx, verbose):
+    logger = logging.getLogger()
+
+    if verbose:
+        for handler in logger.handlers:
+            handler.setLevel(logging.DEBUG)    
+
     config = Config()
     client = Client(config=config)
     ctx.obj = Context()
+    
+    ctx.obj.logger = logger
     ctx.obj.client = client
     ctx.obj.config = config
     ctx.obj.verbose = verbose
+    ctx.obj.logger.debug(f"Initialized {ctx.info_name} with verbose={verbose}")        
+    
 
 
 @cli.command()
@@ -54,16 +66,20 @@ def alerts(ctx):
 @alerts.command()
 @click.pass_context
 def list(ctx):
+    ctx.obj.logger.debug(f"Running comand {sys.argv}")
     resp = ctx.obj.client.get('/notifications')
     log_response(resp, verbose=True)
+    
 
 
 @cli.command()
-def version():
+@click.pass_context
+def version(ctx):
     """
     Print version information
     """
 
+    ctx.obj.logger.debug(f"Running comand {ctx.info_name}")
     print(pkg_resources.require('aet')[0].version)
 
 

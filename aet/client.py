@@ -1,6 +1,9 @@
 import os
 import requests
+import logging
 
+
+logger = logging.getLogger()
 
 class Client(object):
 
@@ -12,6 +15,7 @@ class Client(object):
             'Content-Type': 'application/json',
             'Authorization': f'Bearer {self.token}'
         }
+        logger.debug(f'Initialized client with token={self.token != None} host={self.host}')
 
     def send(self, method, path, data=None, params={}):
         url = self.host + path

@@ -1,5 +1,15 @@
+import logging
 import click
 import json
+
+
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
+
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.INFO)
+
+logger.addHandler(console_handler)
 
 
 def log_response(response, message=None, verbose=False):
