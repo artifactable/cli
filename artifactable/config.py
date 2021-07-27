@@ -34,8 +34,8 @@ class Config(object):
         self.artifactable_credentials_path = self.artifactable_home_dir / 'user.json'
         self.dbt_project_dir = dbt_project_dir or self.default_dbt_project_dir
         self.dbt_target_dir = dbt_target_dir or self.default_dbt_target_dir
-        self.artifactable_host = artifactable_host or os.environ.get('artifactable_HOST') or self.default_artifactable_host
-        self.artifactable_token = artifactable_token or os.environ.get('artifactable_TOKEN') or self.load_saved_token() or self.default_artifactable_token
+        self.artifactable_host = artifactable_host or os.environ.get('ARTIFACTABLE_HOST') or self.default_artifactable_host
+        self.artifactable_token = artifactable_token or os.environ.get('ARTIFACTABLE_TOKEN') or self.load_saved_token() or self.default_artifactable_token
         self.git_branch = self.load_git_branch()
 
     def to_dict(self):  
