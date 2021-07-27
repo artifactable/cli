@@ -15,35 +15,35 @@ class ConfigEncoder(json.JSONEncoder):
 
 class Config(object):
 
-    default_aet_host = 'https://aet-api-prod.herokuapp.com' 
-    default_aet_token = None
-    default_aet_home_dir = pathlib.Path.home() / '.aet'
+    default_artifactable_host = 'https://aet-api-prod.herokuapp.com' 
+    default_artifactable_token = None
+    default_artifactable_home_dir = pathlib.Path.home() / '.artifactable'
     default_dbt_project_dir = pathlib.Path()
     default_dbt_target_dir = default_dbt_project_dir / 'target'
 
     secrets = [
-        'aet_token'
+        'artifactable_token'
     ]
 
-    def __init__(self, aet_host=None, aet_token=None, aet_home_dir=None,
+    def __init__(self, artifactable_host=None, artifactable_token=None, artifactable_home_dir=None,
                  dbt_project_dir=None, dbt_target_dir=None):
-        if aet_home_dir:
-            self.aet_home_dir = pathlib.Path(aet_home_dir)
+        if artifactable_home_dir:
+            self.artifactable_home_dir = pathlib.Path(artifactable_home_dir)
         else:
-            self.aet_home_dir = self.default_aet_home_dir
-        self.aet_credentials_path = self.aet_home_dir / 'user.json'
+            self.artifactable_home_dir = self.default_artifactable_home_dir
+        self.artifactable_credentials_path = self.artifactable_home_dir / 'user.json'
         self.dbt_project_dir = dbt_project_dir or self.default_dbt_project_dir
         self.dbt_target_dir = dbt_target_dir or self.default_dbt_target_dir
-        self.aet_host = aet_host or os.environ.get('AET_HOST') or self.default_aet_host
-        self.aet_token = aet_token or os.environ.get('AET_TOKEN') or self.load_saved_token() or self.default_aet_token
+        self.artifactable_host = artifactable_host or os.environ.get('artifactable_HOST') or self.default_artifactable_host
+        self.artifactable_token = artifactable_token or os.environ.get('artifactable_TOKEN') or self.load_saved_token() or self.default_artifactable_token
         self.git_branch = self.load_git_branch()
 
     def to_dict(self):  
         return {
-            'aet_host': self.aet_host,
-            'aet_token': self.aet_token,
-            'aet_home_dir': self.aet_home_dir,
-            'aet_credentials_path': self.aet_credentials_path,
+            'artifactable_host': self.artifactable_host,
+            'artifactable_token': self.artifactable_token,
+            'artifactable_home_dir': self.artifactable_home_dir,
+            'artifactable_credentials_path': self.artifactable_credentials_path,
             'dbt_project_dir': self.dbt_project_dir,
             'dbt_target_dir': self.dbt_target_dir,
             'git_branch': self.git_branch
@@ -64,13 +64,13 @@ class Config(object):
             return None
     
     def load_saved_token(self):
-        if os.path.exists(self.aet_credentials_path):
-            with open(self.aet_credentials_path, 'r') as fh:
+        if os.path.exists(self.artifactable_credentials_path):
+            with open(self.artifactable_credentials_path, 'r') as fh:
                 try:
                     credentials = json.load(fh)
                     return credentials['data']['attributes']['token']
                 except (json.JSONDecodeError, KeyError) as err:
-                    print(f"Invalid credential file at {self.aet_credentials_path}. "
+                    print(f"Invalid credential file at {self.artifactable_credentials_path}. "
                           f"Please try logging in again.")
                     return None
         else:
@@ -78,8 +78,8 @@ class Config(object):
 
 
     def save_credentials(self, credentials: dict):
-        if not os.path.isdir(self.aet_home_dir):
-            os.mkdir(self.aet_home_dir)
-        with open(self.aet_credentials_path, 'w') as fh:
+        if not os.path.isdir(self.artifactable_home_dir):
+            os.mkdir(self.artifactable_home_dir)
+        with open(self.artifactable_credentials_path, 'w') as fh:
             json.dump(credentials, fh, indent=2)
 

@@ -6,8 +6,8 @@ class Client(object):
 
     def __init__(self, config):
         self.config = config
-        self.token = self.config.aet_token
-        self.host = self.config.aet_host
+        self.token = self.config.artifactable_token
+        self.host = self.config.artifactable_host
         self.headers = {
             'Content-Type': 'application/json',
             'Authorization': f'Bearer {self.token}'

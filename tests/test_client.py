@@ -1,5 +1,5 @@
-from aet.client import Client
-from aet.config import Config
+from artifactable.client import Client
+from artifactable.config import Config
 
 
 def test_client_can_get():

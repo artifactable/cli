@@ -7,7 +7,7 @@
 - Included information about the current git branch when pushing artifacts.
 
 ### Added
-- Added a new command, `aet debug`, for printing information about the context that the CLI is using.
+- Added a new command, `artifactable debug`, for printing information about the context that the CLI is using.
 
 ## 0.1.3 (2021-07-19)
 ### Fixed

@@ -64,7 +64,7 @@ def version():
     Print version information
     """
 
-    print(pkg_resources.require('aet')[0].version)
+    print(pkg_resources.require('artifactable')[0].version)
 
 
 @cli.command()
@@ -113,7 +113,7 @@ def push(ctx, target_dir, project_dir):
 @click.pass_context
 def login(ctx):
     """
-    Log into the aet service
+    Log into the artifactable service
     """
 
     email = input("Enter email: ")
@@ -123,6 +123,7 @@ def login(ctx):
         'email': email,
         'password': password
     })
+
     if resp.ok:
         ctx.obj.config.save_credentials(resp.json())
     log_response(resp, message="Successfully logged in",

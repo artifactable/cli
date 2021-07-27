@@ -1,19 +1,19 @@
 from setuptools import setup, find_packages
 
-import aet
+import artifactable
 
 
 setup(
-    name='aet',    
-    version=aet.__version__,
-    description='Command line interface for working with aet services.',  
+    name='artifactable',    
+    version=artifactable.__version__,
+    description='Command line interface for working with artifactable services.',  
     author='Tom Waterman',
     author_email='tjwaterman99@gmail.com',
-    url='https://github.com/aet-repos/cli', 
+    url='https://github.com/artifactable-repos/cli', 
     packages=find_packages(),
     entry_points={
         'console_scripts': [
-            'aet=aet.__main__:cli'
+            'artifactable=artifactable.__main__:cli'
         ]
     },
     install_requires=[

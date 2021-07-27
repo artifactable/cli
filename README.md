@@ -1,6 +1,6 @@
-# aet
+# artifactable
 
-`aet` is a notification service for your dbt project. You can subscribe to alerts for just the models you want to track by simply tagging your dbt models.
+`artifactable` is a notification service for your dbt project. You can subscribe to alerts for just the models you want to track by simply tagging your dbt models.
 
 ```sql
 {{
@@ -32,39 +32,39 @@ models:
 Install with pip.
 
 ```
-pip install aet
+pip install artifactable
 ```
 
 Register an account.
 
 ```
-aet register
+artifactable register
 ```
 
-Then run or test your dbt project or tests as you normally would, and upload your results to the `aet` service to send alerts about any build or test failures.
+Then run or test your dbt project or tests as you normally would, and upload your results to the `artifactable` service to send alerts about any build or test failures.
 
 ```bash
 # Run your models or tests
 dbt run
 
 # Upload your results to send notifications
-aet push
+artifactable push
 ```
 
 ## Running from a CI suite
 
-To send alerts via a CI process, you'll need to set an environment variable `AET_TOKEN` that contains a token used to authenticate with `aet`'s service.
+To send alerts via a CI process, you'll need to set an environment variable `artifactable_TOKEN` that contains a token used to authenticate with `artifactable`'s service.
 
-To find this token, log into your `aet` account with your email and password.
-
-```
-aet login
-```
-
-Then view the credential details stored in the `~/.aet` folder.
+To find this token, log into your `artifactable` account with your email and password.
 
 ```
-cat ~/.aet/user.json
+artifactable login
+```
+
+Then view the credential details stored in the `~/.artifactable` folder.
+
+```
+cat ~/.artifactable/user.json
 ```
 
 You should see a field called `token`, which contains the token you need.
@@ -86,16 +86,16 @@ You should see a field called `token`, which contains the token you need.
 }
 ```
 
-Then set that token in your environment. Note that the token will take priority over any value stored in `~/.aet`.
+Then set that token in your environment. Note that the token will take priority over any value stored in `~/.artifactable`.
 
 ```bash
-export AET_TOKEN=94ac5c4e-7ebe-4857-9f8a-c112266b9151
+export artifactable_TOKEN=94ac5c4e-7ebe-4857-9f8a-c112266b9151
 ```
 
-You can now send alerts via `aet` without requiring logging in.
+You can now send alerts via `artifactable` without requiring logging in.
 
 ```
-dbt test && aet push
+dbt test && artifactable push
 ```
 
 ## Reference
@@ -103,5 +103,5 @@ dbt test && aet push
 Please use the `--help` command for a full list of options.
 
 ```
-aet --help
+artifactable --help
 ```

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 rm -rf .pytest_cache
-rm -rf aet.egg-info
+rm -rf artifactable.egg-info
 rm -rf build/
 rm -rf dist/
 rm -rf target/
