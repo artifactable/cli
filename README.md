@@ -53,7 +53,7 @@ artifactable push
 
 ## Running from a CI suite
 
-To send alerts via a CI process, you'll need to set an environment variable `artifactable_TOKEN` that contains a token used to authenticate with `artifactable`'s service.
+To send alerts via a CI process, you'll need to set an environment variable `ARTIFACTABLE_TOKEN` that contains a token used to authenticate with `artifactable`'s service.
 
 To find this token, log into your `artifactable` account with your email and password.
 
@@ -89,7 +89,7 @@ You should see a field called `token`, which contains the token you need.
 Then set that token in your environment. Note that the token will take priority over any value stored in `~/.artifactable`.
 
 ```bash
-export artifactable_TOKEN=94ac5c4e-7ebe-4857-9f8a-c112266b9151
+export ARTIFACTABLE_TOKEN=94ac5c4e-7ebe-4857-9f8a-c112266b9151
 ```
 
 You can now send alerts via `artifactable` without requiring logging in.
