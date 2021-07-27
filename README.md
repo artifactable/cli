@@ -53,9 +53,9 @@ artifactable push
 
 ## Running from a CI suite
 
-To send alerts via a CI process, you'll need to set an environment variable `ARTIFACTABLE_TOKEN` that contains a token used to authenticate with `artifactable`'s service.
+To send alerts via a CI process, you'll need to set an environment variable `ARTIFACTABLE_TOKEN` that contains a token used to authenticate with our messaging service.
 
-To find this token, log into your `artifactable` account with your email and password.
+To find this token, log in to your account with your email and password.
 
 ```
 artifactable login
@@ -92,7 +92,7 @@ Then set that token in your environment. Note that the token will take priority 
 export ARTIFACTABLE_TOKEN=94ac5c4e-7ebe-4857-9f8a-c112266b9151
 ```
 
-You can now send alerts via `artifactable` without requiring logging in.
+You can now send alerts via the `artifactable` command without having to manually log in.
 
 ```
 dbt test && artifactable push
