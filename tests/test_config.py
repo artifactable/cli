@@ -31,8 +31,8 @@ def test_config_to_dict(tmpdir):
 
 
 def test_config_loads_env_vars():
-    os.environ['artifactable_HOST'] = 'artifactablehost'
-    os.environ['artifactable_TOKEN'] = 'testtoken'
+    os.environ['ARTIFACTABLE_HOST'] = 'artifactablehost'
+    os.environ['ARTIFACTABLE_TOKEN'] = 'testtoken'
 
     config = Config()
     assert config.artifactable_host == 'artifactablehost'
@@ -44,6 +44,6 @@ def test_config_saves_credentials(tmpdir):
     credentials = {'data': {'attributes': {'token': 'testtoken'}}}
     config.save_credentials(credentials)
 
-    os.environ['artifactable_TOKEN'] = ''
+    os.environ['ARTIFACTABLE_TOKEN'] = ''
     config = Config(artifactable_home_dir=tmpdir)
     assert config.artifactable_token == 'testtoken'
